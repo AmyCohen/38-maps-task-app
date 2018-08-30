@@ -40,5 +40,6 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
     </application>
-
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 </manifest>
