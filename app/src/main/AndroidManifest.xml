@@ -45,7 +45,14 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity android:name=".ErrandListActivity"></activity>
+        <activity android:name=".ErrandListActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
     </application>
 
 </manifest>
