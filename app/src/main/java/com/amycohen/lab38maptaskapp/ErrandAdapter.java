@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ class ErrandAdapter extends RecyclerView.Adapter<ErrandAdapter.MyViewHolder> {
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         View mView;
         TextView description;
+        CheckBox checkbox;
         Errand errand;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -49,11 +51,13 @@ class ErrandAdapter extends RecyclerView.Adapter<ErrandAdapter.MyViewHolder> {
             mView.setOnClickListener(this);
 
             description = itemView.findViewById(R.id.description);
+            checkbox = itemView.findViewById(R.id.isComplete);
         }
 
         public void bind (Errand errand) {
             this.errand = errand;
             description.setText(errand.description);
+            checkbox.setChecked(errand.isComplete);
         }
 
         @Override
