@@ -20,8 +20,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
 
@@ -30,6 +33,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final int REQUEST_PERMISSION_GRANT = 1;
     private GoogleMap mMap;
     private LocationManager locationManager;
+
+    //from lecture demo
+    private LatLng mCurrentLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +46,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        //from lecture demo - all of the centering data
         Intent data = getIntent();
-        DatabaseReference errands = FirebaseDatabase.getInstance().getReference("errands");
+
+        FirebaseDatabase.getInstance().getReference("errands").child(data.getStringExtra("id")).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Errand errand = Errand.fromSnapshot(dataSnapshot);
+                mMap.addMarker(new MarkerOptions().title("start").position(errand.start));
+                mMap.addMarker(new MarkerOptions().title("end").position(errand.end));
+
+                double centerLatitude = (errand.start.latitude + errand.end.latitude)/2;
+                double centerLongitude = (errand.start.longitude + errand.end.longitude)/2;
+                LatLng center = new LatLng(centerLatitude, centerLongitude);
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(center));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+//        DatabaseReference errands = FirebaseDatabase.getInstance().getReference("errands");
 //        DatabaseReference errandRef = errands.child(data.getStringExtra("id")).addListenerForSingleValueEvent();
 //        Errand errand  = Errand.fromSnapshot(errandRef);
 
