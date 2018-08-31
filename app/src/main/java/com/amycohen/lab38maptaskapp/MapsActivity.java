@@ -2,6 +2,7 @@ package com.amycohen.lab38maptaskapp;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -19,6 +20,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
 
@@ -37,9 +40,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        //found on stackoverflow via class lecture video:
-        // https://stackoverflow.com/questions/17591147/how-to-get-current-location-in-android
-
+        Intent data = getIntent();
+        DatabaseReference errands = FirebaseDatabase.getInstance().getReference("errands");
+//        DatabaseReference errandRef = errands.child(data.getStringExtra("id")).addListenerForSingleValueEvent();
+//        Errand errand  = Errand.fromSnapshot(errandRef);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             initializeLocationListener();
@@ -53,6 +57,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @SuppressLint("MissingPermission")
     private void initializeLocationListener() {
+        //found on stackoverflow via class lecture video:
+        // https://stackoverflow.com/questions/17591147/how-to-get-current-location-in-android
         LocationListener listener = this;
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,

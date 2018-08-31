@@ -1,5 +1,6 @@
 package com.amycohen.lab38maptaskapp;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -37,19 +38,30 @@ class ErrandAdapter extends RecyclerView.Adapter<ErrandAdapter.MyViewHolder> {
         return errands.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         View mView;
         TextView description;
+        Errand errand;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             mView = itemView;
+            mView.setOnClickListener(this);
 
             description = itemView.findViewById(R.id.description);
         }
 
         public void bind (Errand errand) {
+            this.errand = errand;
             description.setText(errand.description);
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(mView.getContext(), MapsActivity.class);
+            intent.putExtra("id", errand.id);
+            mView.getContext().startActivity(intent);
+
         }
     }
 }
