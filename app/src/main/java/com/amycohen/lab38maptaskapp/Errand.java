@@ -8,6 +8,7 @@ public class Errand {
     String description;
     LatLng start;
     LatLng end;
+    boolean isComplete;
 
     public Errand () {}
 
