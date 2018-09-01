@@ -60,13 +60,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Errand errand = Errand.fromSnapshot(dataSnapshot);
-                mMap.addMarker(new MarkerOptions().title("start").position(errand.start));
-                mMap.addMarker(new MarkerOptions().title("end").position(errand.end));
+                mMap.addMarker(new MarkerOptions().position(errand.start).title("start"));
+                mMap.addMarker(new MarkerOptions().position(errand.end).title("end"));
 
                 double centerLat = (errand.start.latitude + errand.end.latitude) / 2;
                 double centerLng = (errand.start.longitude + errand.end.longitude) / 2;
                 LatLng center = new LatLng(centerLat, centerLng);
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(center));
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(center));
             }
 
             @Override
@@ -74,7 +74,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });
-
 
         //from lecture demo - all of the centering data
 //        final Intent data = getIntent();
