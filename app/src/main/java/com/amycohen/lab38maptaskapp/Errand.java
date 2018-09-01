@@ -2,6 +2,7 @@ package com.amycohen.lab38maptaskapp;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
 
 public class Errand {
     String id;
@@ -37,4 +38,5 @@ public class Errand {
         return errand;
 
     }
+
 }

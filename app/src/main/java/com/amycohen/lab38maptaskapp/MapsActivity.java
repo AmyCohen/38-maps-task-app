@@ -26,11 +26,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
 
     private static final int LOCATION_REFRESH_TIME = 1;
     private static final int LOCATION_REFRESH_DISTANCE = 1;
     private static final int REQUEST_PERMISSION_GRANT = 1;
+    private static final String TAG = "";
     private GoogleMap mMap;
     private LocationManager locationManager;
 
@@ -46,31 +50,65 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        //from lecture demo - all of the centering data
-        Intent data = getIntent();
+        ButterKnife.bind(this);
 
-        FirebaseDatabase.getInstance().getReference("errands").child(data.getStringExtra("id")).addListenerForSingleValueEvent(new ValueEventListener() {
+        //from lecture demo - all of the centering data
+        final Intent data = getIntent();
+
+        DatabaseReference errands = FirebaseDatabase.getInstance().getReference("errands");
+
+        DatabaseReference errandRef = errands;
+
+//        errandRef.child(data.getStringExtra("id"));
+        errandRef.addValueEventListener(new ValueEventListener() {
+
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Errand errand = Errand.fromSnapshot(dataSnapshot);
                 mMap.addMarker(new MarkerOptions().title("start").position(errand.start));
                 mMap.addMarker(new MarkerOptions().title("end").position(errand.end));
 
-                double centerLatitude = (errand.start.latitude + errand.end.latitude)/2;
-                double centerLongitude = (errand.start.longitude + errand.end.longitude)/2;
+                double centerLatitude = (errand.start.latitude + errand.end.latitude) / 2;
+                double centerLongitude = (errand.start.longitude + errand.end.longitude) / 2;
                 LatLng center = new LatLng(centerLatitude, centerLongitude);
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(center));
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(center));
+
+                String value = dataSnapshot.getValue(String.class);
+                Log.d(TAG, "Value is: " + value);
+
+                mMap.getCameraPosition();
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
             }
         });
-
-//        DatabaseReference errands = FirebaseDatabase.getInstance().getReference("errands");
-//        DatabaseReference errandRef = errands.child(data.getStringExtra("id")).addListenerForSingleValueEvent();
 //        Errand errand  = Errand.fromSnapshot(errandRef);
+
+//        FirebaseDatabase.getInstance().getReference("errands").child(data.getStringExtra("id")).addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                Errand errand = Errand.fromSnapshot(dataSnapshot);
+//                mMap.addMarker(new MarkerOptions().title("start").position(errand.start));
+//                mMap.addMarker(new MarkerOptions().title("end").position(errand.end));
+//
+//                double centerLatitude = (errand.start.latitude + errand.end.latitude)/2;
+//                double centerLongitude = (errand.start.longitude + errand.end.longitude)/2;
+//                LatLng center = new LatLng(centerLatitude, centerLongitude);
+//                mMap.animateCamera(CameraUpdateFactory.newLatLng(center));
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+
+//        DatabaseReference errands1 = FirebaseDatabase.getInstance().getReference("errands");
+//        DatabaseReference errandRef1 = errands.child(data.getStringExtra("id")).addListenerForSingleValueEvent();
+//        Errand errand  = Errand.fromSnapshot(errandRef1);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             initializeLocationListener();
@@ -116,13 +154,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+//        LatLng seattle = new LatLng(47.6131746, -122.4821489);
+//        mMap.addMarker(new MarkerOptions().position(seattle).title("Marker in Seattle"));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(seattle));
     }
 
     @Override
     public void onLocationChanged(Location location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(12));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+//        mMap.moveCamera(CameraUpdateFactory.zoomTo(12));
+        mCurrentLocation = latLng;
+    }
+
+    @OnClick(R.id.goToMyLocation)
+    public void goToMyLocation () {
+        if (mCurrentLocation != null) {
+            mMap.addMarker(new MarkerOptions().position(mCurrentLocation).title("Here you are"));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(mCurrentLocation));
+
+        }
     }
 
     @Override
