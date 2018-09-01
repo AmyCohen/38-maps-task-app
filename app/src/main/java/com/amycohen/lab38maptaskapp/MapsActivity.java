@@ -45,46 +45,70 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        ButterKnife.bind(this);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        ButterKnife.bind(this);
-
-        //from lecture demo - all of the centering data
         final Intent data = getIntent();
 
-        DatabaseReference errands = FirebaseDatabase.getInstance().getReference("errands");
-
-        DatabaseReference errandRef = errands;
-
-//        errandRef.child(data.getStringExtra("id"));
-        errandRef.addValueEventListener(new ValueEventListener() {
-
+        FirebaseDatabase.getInstance().getReference("errands")
+                .child(data.getStringExtra("id")).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Errand errand = Errand.fromSnapshot(dataSnapshot);
                 mMap.addMarker(new MarkerOptions().title("start").position(errand.start));
                 mMap.addMarker(new MarkerOptions().title("end").position(errand.end));
 
-                double centerLatitude = (errand.start.latitude + errand.end.latitude) / 2;
-                double centerLongitude = (errand.start.longitude + errand.end.longitude) / 2;
-                LatLng center = new LatLng(centerLatitude, centerLongitude);
-                mMap.animateCamera(CameraUpdateFactory.newLatLng(center));
-
-                String value = dataSnapshot.getValue(String.class);
-                Log.d(TAG, "Value is: " + value);
-
-                mMap.getCameraPosition();
+                double centerLat = (errand.start.latitude + errand.end.latitude) / 2;
+                double centerLng = (errand.start.longitude + errand.end.longitude) / 2;
+                LatLng center = new LatLng(centerLat, centerLng);
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(center));
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
+
+
+        //from lecture demo - all of the centering data
+//        final Intent data = getIntent();
+//
+//        DatabaseReference errands = FirebaseDatabase.getInstance().getReference("errands");
+//
+////        DatabaseReference errandRef = errands;
+//
+//        errands.child(data.getStringExtra("id"));
+//        errands.addValueEventListener(new ValueEventListener() {
+//
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                Errand errand = Errand.fromSnapshot(dataSnapshot);
+//                mMap.addMarker(new MarkerOptions().title("start").position(errand.start));
+//                mMap.addMarker(new MarkerOptions().title("end").position(errand.end));
+//
+//                double centerLatitude = (errand.start.latitude + errand.end.latitude) / 2;
+//                double centerLongitude = (errand.start.longitude + errand.end.longitude) / 2;
+//                LatLng center = new LatLng(centerLatitude, centerLongitude);
+//                mMap.animateCamera(CameraUpdateFactory.newLatLng(center));
+//
+//                String value = dataSnapshot.getValue(String.class);
+//                Log.d(TAG, "Value is: " + value);
+//
+//                mMap.getCameraPosition();
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError error) {
+//                // Failed to read value
+//                Log.w(TAG, "Failed to read value.", error.toException());
+//            }
+//        });
 //        Errand errand  = Errand.fromSnapshot(errandRef);
 
 //        FirebaseDatabase.getInstance().getReference("errands").child(data.getStringExtra("id")).addListenerForSingleValueEvent(new ValueEventListener() {
