@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -29,6 +30,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
 
@@ -137,11 +141,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        DatabaseReference errandRef1 = errands.child(data.getStringExtra("id")).addListenerForSingleValueEvent();
 //        Errand errand  = Errand.fromSnapshot(errandRef1);
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             initializeLocationListener();
         } else {
             ActivityCompat.requestPermissions(this, new String[] {
-                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION,
             }, REQUEST_PERMISSION_GRANT );
         }
@@ -208,6 +212,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void goToMyErrandList() {
         Intent intent = new Intent(this, ErrandListActivity.class);
         startActivity(intent);
+    }
+
+    @OnClick(R.id.gpsOff)
+    public void turnGpsOff() {
+        //Disable GPS
+        onRequestPermissionsResult(0, new String[]{"off"}, new int[]{0, 0});
+        Toast.makeText(getApplicationContext(), "GPS is off", Toast.LENGTH_LONG).show();
+        Log.d("GPS", "gps turned off");
+    }
+
+    @OnClick(R.id.gpsOn)
+    public void turnGpsOn() {
+        //Enable GPS
+        onRequestPermissionsResult(REQUEST_PERMISSION_GRANT, new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION},
+                new int[]{RESULT_OK});
+        Toast.makeText(getApplicationContext(), "GPS is on", Toast.LENGTH_LONG).show();
+        Log.d("GPS", "gps turned on");
     }
 
     @Override
