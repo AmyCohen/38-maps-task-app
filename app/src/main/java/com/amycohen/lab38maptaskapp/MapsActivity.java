@@ -68,7 +68,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 double centerLng = (errand.start.longitude + errand.end.longitude) / 2;
 
                 mMap.moveCamera(CameraUpdateFactory.zoomTo(8));
-                
+
                 LatLng center = new LatLng(centerLat, centerLng);
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(center));
             }
@@ -202,6 +202,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.moveCamera(CameraUpdateFactory.newLatLng(mCurrentLocation));
 
         }
+    }
+
+    @OnClick(R.id.goToErrandList)
+    public void goToMyErrandList() {
+        Intent intent = new Intent(this, ErrandListActivity.class);
+        startActivity(intent);
     }
 
     @Override

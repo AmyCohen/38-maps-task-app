@@ -15,11 +15,23 @@
 
     <!--added this based on the lecture repo's demo folder-->
     <!--https://github.com/codefellows/seattle-java-401d1/blob/master/class-38-background-services/demos/LiveMaps/app/src/main/res/layout/activity_maps.xml-->
-    <Button
-        android:id="@+id/goToMyLocation"
-        android:text="@string/go_to_my_location"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent">
+        <Button
+            android:id="@+id/goToMyLocation"
+            android:text="@string/go_to_my_location"
+            android:layout_weight="1"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/goToErrandList"
+            android:text="@string/errand_list"
+            android:layout_weight="1"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

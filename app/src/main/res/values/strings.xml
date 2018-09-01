@@ -2,5 +2,6 @@
     <string name="app_name">lab38maptaskapp</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_errand_list">ErrandListActivity</string>
-    <string name="go_to_my_location">go to my location</string>
+    <string name="go_to_my_location">current location</string>
+    <string name="errand_list">errand list</string>
 </resources>
