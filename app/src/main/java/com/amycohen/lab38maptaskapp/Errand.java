@@ -32,7 +32,7 @@ public class Errand {
 
         float endLatitude = snapshot.child("end").child("lat").getValue(float.class);
         float endLongitude = snapshot.child("end").child("long").getValue(float.class);
-        errand.end = new LatLng(endLatitude, endLatitude);
+        errand.end = new LatLng(endLatitude, endLongitude);
 
         return errand;
     }
