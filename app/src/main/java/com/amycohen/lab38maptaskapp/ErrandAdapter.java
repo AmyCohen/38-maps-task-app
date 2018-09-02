@@ -64,8 +64,6 @@ class ErrandAdapter extends RecyclerView.Adapter<ErrandAdapter.MyViewHolder> {
         public void onClick(View v) {
             Intent intent = new Intent(mView.getContext(), MapsActivity.class);
             intent.putExtra("id", errand.id);
-            intent.putExtra("start", errand.start);
-            intent.putExtra("end", errand.end);
             mView.getContext().startActivity(intent);
 
         }
